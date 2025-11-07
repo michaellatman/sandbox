@@ -6,6 +6,7 @@ toolchain go1.23.8
 
 require (
 	github.com/blaxel-ai/sandbox-api v0.0.0
+	github.com/gorilla/websocket v1.5.3
 	github.com/modelcontextprotocol/go-sdk v1.0.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.10.0

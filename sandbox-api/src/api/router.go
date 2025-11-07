@@ -33,18 +33,22 @@ func SetupRouter() *gin.Engine {
 	// Add logrus middleware
 	r.Use(logrusMiddleware())
 
-	// Swagger documentation route
-	r.GET("/swagger", func(c *gin.Context) {
-		c.Redirect(301, "/swagger/index.html")
-	})
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
 	// Initialize handlers
 	baseHandler := handler.NewBaseHandler()
 	fsHandler := handler.NewFileSystemHandler()
 	processHandler := handler.NewProcessHandler()
 	networkHandler := handler.NewNetworkHandler()
 	codegenHandler := handler.NewCodegenHandler(fsHandler)
+	wsHandler := handler.NewWebSocketHandler(fsHandler, processHandler, networkHandler, codegenHandler)
+
+	// WebSocket endpoint
+	r.GET("/ws", wsHandler.HandleWebSocket)
+
+	// Swagger documentation route
+	r.GET("/swagger", func(c *gin.Context) {
+		c.Redirect(301, "/swagger/index.html")
+	})
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Custom filesystem tree router middleware to handle tree-specific routes
 	r.Use(func(c *gin.Context) {
